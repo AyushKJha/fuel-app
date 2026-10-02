@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.expo/
+.vercel/
+.env*
+!.env.example
+*.tsbuildinfo
+*.apk
+*.aab
+*.jks
+*.keystore
+*.pem
+*.key
+android/android/
+android/ios/
