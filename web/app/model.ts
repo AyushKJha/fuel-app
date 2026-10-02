@@ -1,0 +1,11 @@
+import {z} from 'zod';
+export const nutrientKeys=['calories','protein','carbs','fat','fiber','saturatedFat','unsaturatedFat','sugar','sodium','vitaminC','vitaminD','calcium','iron'] as const;
+const n=z.number().finite().min(0).max(100000);
+export const mealSchema=z.object({name:z.string().trim().min(1).max(120),date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(v=>{const d=new Date(v);return !isNaN(+d)&&d.toISOString().slice(0,10)===v}),time:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),category:z.enum(['Breakfast','Lunch','Dinner','Snack']),notes:z.string().max(1000).default(''),calories:n.max(20000),protein:n.max(2000),carbs:n.max(2000),fat:n.max(2000),fiber:n.max(2000),saturatedFat:n.nullable(),unsaturatedFat:n.nullable(),sugar:n.nullable(),sodium:n.nullable(),vitaminC:n.nullable(),vitaminD:n.nullable(),calcium:n.nullable(),iron:n.nullable()}).refine(v=>(v.saturatedFat??0)+(v.unsaturatedFat??0)<=v.fat,{message:'Fat subtypes cannot exceed total fat.'});
+export const templateSchema=z.object({id:z.string().uuid(),kind:z.enum(['Favourite','Recipe']),meal:mealSchema});
+export const settingsSchema=z.object({goal:z.enum(['Lean bulk','Cut','Maintain']),calories:z.number().min(1000).max(10000),protein:z.number().min(0).max(500),carbs:z.number().min(0).max(1500),fat:z.number().min(0).max(300),fiber:z.number().min(0).max(100),weight:z.number().min(30).max(300),reminder:z.boolean(),reminderTime:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),retainPhotos:z.boolean().default(true),templates:z.array(templateSchema).max(100).default([])});
+export type Meal=z.infer<typeof mealSchema>&{id:string;photo?:string;demo?:boolean;pending?:boolean};
+export type Goals=z.infer<typeof settingsSchema>;
+export const defaults:Goals={goal:'Lean bulk',calories:2600,protein:160,carbs:325,fat:72,fiber:30,weight:70,reminder:false,reminderTime:'21:00',retainPhotos:true,templates:[]};
+export function dateKey(d=new Date()){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+export function totals(rows:Meal[]){return Object.fromEntries(nutrientKeys.map(k=>[k,rows.reduce((sum,r)=>sum+(r[k]??0),0)])) as Record<typeof nutrientKeys[number],number>}

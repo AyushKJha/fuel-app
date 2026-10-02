@@ -1,20 +1,7 @@
 # Fuel
 
-Meal journal for the web and Android. Source is being published in four incremental releases; these are publication dates for an existing project.
+Existing code is being published over four days, October 2–5, 2026.
 
-## Publication plan
+Journal, login, storage, offline logging, recipes, privacy controls and progress. The analysis endpoint is intentionally unavailable until stage 3.
 
-- October 2, 2026: responsive dark landing page and introduction.
-- October 3, 2026: journal, macro views, Supabase login and private meal storage.
-- October 4, 2026: server-side photo analysis and editable food estimates.
-- October 5, 2026: Expo Android app and native camera/photo bridge.
-
-## Run the web app
-
-Use Node 22.13 or newer. Run `cd web`, `npm ci`, and `npm run dev`, then open http://localhost:3000/welcome.
-
-## Current scope
-
-Landing page and introduction only. Journal links lead back to the landing page until the next release. No login, storage or photo analysis is included yet.
-
-Credentials, user data, generated builds and signing keys are excluded.
+Run web: Node 22.13+, cd web, npm ci, npm run dev. Configure Supabase and apply both SQL files. Read web/README.md. Credentials, user data, signing keys and APKs are excluded.

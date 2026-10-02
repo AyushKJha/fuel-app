@@ -1,0 +1,10 @@
+import {getChatGPTUser} from '../../chatgpt-auth';
+import {createClient} from '../../../lib/supabase/server';
+export async function POST(request:Request){const user=await getChatGPTUser();if(!user)return Response.json({error:'Sign in to manage your data.'},{status:401});if(request.headers.get('origin')!==new URL(request.url).origin)return Response.json({error:'Invalid origin'},{status:403});try{
+ const body=await request.json();if(!['photos','account'].includes(body.action)||body.confirm!=='DELETE')return Response.json({error:'Type DELETE to confirm.'},{status:400});const client=await createClient();
+ if(body.action==='account'){if(typeof body.password!=='string'||body.password.length<8||body.password.length>1024)return Response.json({error:'Enter your current password.'},{status:400});const verified=await client.auth.signInWithPassword({email:user.email,password:body.password});if(verified.error||verified.data.user?.id!==user.userId)return Response.json({error:'Your password could not be verified.'},{status:403});}
+ for(let batch=0;batch<101;batch++){const listed=await client.storage.from('meal-photos').list(user.userId,{limit:100});if(listed.error)throw listed.error;if(!listed.data.length)break;if(batch===100)throw Error('Too many photos; retry cleanup');const removed=await client.storage.from('meal-photos').remove(listed.data.map(file=>user.userId+'/'+file.name));if(removed.error)throw removed.error;}
+ const cleared=await client.from('meals').update({photo_key:null}).eq('owner',user.userId);if(cleared.error)throw cleared.error;
+ if(body.action==='account'){const deleted=await client.rpc('delete_my_fuel_account');if(deleted.error)throw deleted.error;await client.auth.signOut({scope:'local'});}
+ return Response.json({ok:true},{headers:{'Cache-Control':'no-store'}});
+ }catch{return Response.json({error:'Cleanup could not finish. Some photos may already have been removed. Your other saved data remains unless account deletion completed. Please retry.'},{status:503});}}
