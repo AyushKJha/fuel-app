@@ -1,0 +1,16 @@
+const fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),assert=require('node:assert/strict');
+const ts=require('../web/node_modules/typescript');
+const filename=path.resolve('web/app/native-photo.ts'),m=new Module(filename,module);m.filename=filename;
+m._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,filename);
+const messages=[],received=[],errors=[];global.window={ReactNativeWebView:{postMessage:text=>messages.push(JSON.parse(text))}};
+const cleanup=m.exports.installPhotoReceiver(file=>received.push(file),message=>errors.push(message));
+assert.equal(messages.shift().type,'fuel-photo-ready');
+assert.equal(m.exports.requestPhoto(true),true);assert.equal(messages.at(-1).camera,true);assert.equal(messages.at(-1).type,'fuel-photo');
+assert.equal(m.exports.requestPhoto(false),true);assert.equal(messages.at(-1).camera,false);
+const jpeg=Buffer.from([255,216,255,224,0,2,255,217]).toString('base64');
+window.__fuelReceivePhoto(jpeg);assert.equal(received.length,1);assert.equal(received[0].type,'image/jpeg');assert.equal(received[0].size,8);
+window.__fuelHandleNativePhoto({requestId:'native-test',base64:jpeg});window.__fuelHandleNativePhoto({requestId:'native-test',base64:jpeg});assert.equal(received.length,2);assert.equal(messages.at(-1).type,'fuel-photo-ack');
+window.__fuelHandleNativePhoto({requestId:'cancel-test',canceled:true});assert.equal(received.length,2);
+window.__fuelHandleNativePhoto({requestId:'bad-test',base64:'bm90LWEtcGhvdG8='});assert.equal(errors.length,1);assert.equal(received.length,2);
+cleanup();delete window.ReactNativeWebView;assert.equal(m.exports.requestPhoto(true),false);
+console.log('PASS: camera/gallery direct messages; old APK callback; direct File delivery without DataTransfer or input clicks; duplicate suppression; cancellation; invalid-image error; normal-browser fallback.');
