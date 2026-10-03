@@ -1,13 +1,144 @@
 # Fuel
 
-A meal journal for the web and Android, with photo-based nutrition estimates, private Supabase storage, offline meal logging and daily summaries. All four source releases are published.
+Fuel is a meal journal for Android phones and laptop browsers. Photograph a meal, review the estimated foods and portions, and track nutrition against your goals over time.
 
-## Run locally
+**Website:** [fuel-journal.vercel.app](https://fuel-journal.vercel.app)
 
-Use Node 22.13 or newer. Run npm ci in web and android, configure web/.env.example locally, and follow web/README.md for the Supabase migrations. Start the website with npm run dev from web. See android/README.md for Android setup.
+**Android release:** 0.3.0 · version code 4 · package ID: com.fuelmealjournal.app
 
-## Verify
+## Features
 
-After installing both projects' dependencies, run node tests/run.cjs from the repository root. These checks cover photo delivery and duplicate suppression, Android permission/cancellation feedback and origin validation, account isolation, retry-safe meal saves, deletion safeguards and logout behavior. Authentication, storage and device APIs are mocked; no account or credentials are required. Run npm run typecheck in web and npx tsc --noEmit in android for source checks.
+- Camera and gallery input with server-side Gemini nutrition estimates.
+- Portion adjustments, food corrections and extra ingredients such as oils and sauces, with confirmation before saving.
+- Daily calorie, protein, carbohydrate and fat totals, with supported micronutrients.
+- Goal settings, monthly meal history, weekly comparisons and progress summaries.
+- Recent meals, favourites, recipes and editable repeated meals.
+- Private Supabase accounts, owner-scoped meal records and private photo storage.
+- Account-scoped offline journal and queued meal uploads that sync after reconnecting.
+- Android local reminders, native CSV/JSON sharing, logout and version/update information.
+- Photo-retention settings, meal/photo deletion and password-confirmed account deletion.
+- Dark charcoal and lime interface that adapts to phone and desktop screens.
 
-Physical Android camera/gallery and notification validation remains necessary. Photo nutrition values are estimates and require portion confirmation. Credentials, user data, signing keys and APKs are excluded from this repository.
+## How it works
+
+The Android app displays the hosted journal in a React Native WebView and supplies native camera, photo-picker, sharing and notification features. The website provides the journal interface and API routes. Supabase handles authentication, database records and private photo storage. Photo analysis runs on the server using Gemini; the AI key is never bundled into the browser or APK.
+
+A photo produces an estimate, not a measured nutritional result. Users review the identified foods, serving sizes and added ingredients before saving.
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+| web/ | Next.js website, API routes, offline shell and Supabase SQL migrations |
+| android/ | Expo Android app, native photo bridge and local reminders |
+| tests/ | Repeatable checks with mocked authentication, storage and device APIs |
+
+More detail: [web documentation](web/README.md) and [Android documentation](android/README.md).
+
+## Local setup
+
+### Requirements
+
+- Node.js 22.13 or newer and npm.
+- A Supabase project for authentication, database and storage.
+- A Gemini API key for photo analysis.
+- An Expo account for cloud Android builds; a phone or Android emulator for device testing.
+
+### Website
+
+Clone this private repository using an account with access:
+
+```sh
+git clone https://github.com/AyushKJha/fuel-app.git
+cd fuel-app/web
+npm ci
+```
+
+Copy .env.example to .env.local and fill in:
+
+| Variable | Purpose |
+| --- | --- |
+| NEXT_PUBLIC_SUPABASE_URL | Your Supabase project URL |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Browser-safe Supabase publishable key |
+| GEMINI_API_KEY | Server-only key for photo analysis |
+
+In a new Supabase project, run supabase.sql and then supabase-upgrade.sql using the SQL editor. The migrations create meal/settings tables, owner-scoped access policies, private photo storage and deletion support. Configure Supabase Auth's site URL and allowed redirect URLs for your local and deployed origins, including /auth/callback. Email verification follows your Supabase Auth configuration.
+
+Start development:
+
+```sh
+npm run dev
+```
+
+Open the local URL printed by Next.js. For a production build:
+
+```sh
+npm run build
+npm start
+```
+
+For Vercel hosting, select web as the project root and configure the same environment variables in Vercel. Keep GEMINI_API_KEY server-only and leave .env.local out of Git.
+
+### Android
+
+From the repository root:
+
+```sh
+cd android
+npm ci
+npx expo start
+```
+
+The app currently connects to the deployed Fuel website. For your own deployment, update HOME and ORIGIN in App.tsx together. Before creating a separate Expo project, update app.json's owner and EAS project ID through your own Expo setup.
+
+Create an installable APK:
+
+```sh
+npx eas-cli build --platform android --profile preview
+```
+
+The production build profile creates a store bundle:
+
+```sh
+npx eas-cli build --platform android --profile production
+```
+
+For updates to the existing Fuel installation, retain its package ID and signing identity and increase the Android version code. Install the signed update over the existing app. A separate developer's signing key cannot update the original installation. Signing credentials and APKs are intentionally excluded from this repository.
+
+## Checks
+
+Install dependencies in both web and android, then run from the repository root:
+
+```sh
+node tests/run.cjs
+```
+
+The suites cover photo delivery, duplicate suppression, Android picker feedback and permissions, bridge origin checks, account isolation, duplicate-safe meal saves, deletion safeguards and logout success/failure behavior. They use mocks and do not require accounts or credentials.
+
+Check TypeScript separately:
+
+```sh
+cd web
+npm run typecheck
+cd ../android
+npx tsc --noEmit
+```
+
+## Current limitations
+
+- Real Android camera/gallery behavior, notification delivery and native sharing still need physical-device verification. Passing mocks does not establish device compatibility.
+- Authenticated cloud writes and deletions were not exercised during the latest upgrade. The published tests mock those services.
+- Photos cannot reliably determine exact serving weights or hidden ingredients. Unsupported micronutrients remain unknown; nutrition estimates require review.
+- Photo analysis needs internet and is subject to provider quotas and outages. Free-tier availability is not a guarantee of unlimited usage.
+- Offline access requires an earlier online visit on that device. Analysis, goals and recipe changes require internet. Logout clears the active local journal and pending meals; sync or export first.
+- Android reminders cover up to 30 days and refresh when the app opens. Future reminders prompt users to open their summary; battery restrictions can delay delivery. Website reminders require the website to stay open.
+- Existing data from the original Sites version is not automatically migrated.
+- Android development-toolchain dependency advisories remain; review the Android documentation before store publication.
+
+## Privacy and data
+
+Meal records and stored photos are scoped to the signed-in account. Photos and supplied meal details are sent to Google for analysis; free-tier submissions may be reviewed and used for product improvement. Avoid sensitive information in uploads. Disabling Fuel photo retention affects future Fuel storage, not the analysis provider's processing. CSV/JSON exports omit photo files.
+
+Read the published [privacy information](https://fuel-journal.vercel.app/privacy) and [account-deletion instructions](https://fuel-journal.vercel.app/delete-account).
+
+Credentials, user data, signing keys, generated builds and APK files must remain outside Git. This private source repository does not grant a redistribution license; third-party dependencies retain their respective licenses.
