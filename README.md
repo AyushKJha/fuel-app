@@ -4,18 +4,21 @@ Fuel is a meal journal for Android phones and laptop browsers. Photograph a meal
 
 **Website:** [fuel-journal.vercel.app](https://fuel-journal.vercel.app)
 
-**Android release:** 0.3.0 · version code 4 · package ID: com.fuelmealjournal.app
+**Android release:** 0.4.0 · version code 5 · package ID: com.fuelmealjournal.app
 
 ## Features
 
-- Camera and gallery input with server-side Gemini nutrition estimates.
+- Camera and gallery input with server-side Gemini nutrition estimates and acknowledged native photo delivery.
+- Android barcode scanning and Open Food Facts product lookup with editable serving sizes.
 - Portion adjustments, food corrections and extra ingredients such as oils and sauces, with confirmation before saving.
 - Daily calorie, protein, carbohydrate and fat totals, with supported micronutrients.
 - Goal settings, monthly meal history, weekly comparisons and progress summaries.
-- Recent meals, favourites, recipes and editable repeated meals.
+- Searchable recent meals, favourites, recipes and editable repeated meals.
+- Body-weight history, recorded-entry averages and change over time.
 - Private Supabase accounts, owner-scoped meal records and private photo storage.
-- Account-scoped offline journal and queued meal uploads that sync after reconnecting.
-- Android local reminders, native CSV/JSON sharing, logout and version/update information.
+- Account-scoped offline journal, recoverable photo drafts and meal uploads stored on device before sending.
+- Clear device/cloud sync status and stable retries after ambiguous responses.
+- Android local reminders, native CSV/JSON sharing, logout and automatic update notices.
 - Photo-retention settings, meal/photo deletion and password-confirmed account deletion.
 - Dark charcoal and lime interface that adapts to phone and desktop screens.
 
@@ -113,7 +116,7 @@ Install dependencies in both web and android, then run from the repository root:
 node tests/run.cjs
 ```
 
-The suites cover photo delivery, duplicate suppression, Android picker feedback and permissions, bridge origin checks, account isolation, duplicate-safe meal saves, deletion safeguards and logout success/failure behavior. They use mocks and do not require accounts or credentials.
+The suites cover photo delivery, duplicate suppression, Android picker/barcode behavior and permissions, bridge origin checks, account isolation, durable offline saves, draft recovery, label serving arithmetic and nutrient units, duplicate-safe meal saves, deletion safeguards and logout success/failure behavior. They use mocks and do not require accounts or credentials.
 
 Check TypeScript separately:
 
@@ -129,15 +132,15 @@ npx tsc --noEmit
 - Real Android camera/gallery behavior, notification delivery and native sharing still need physical-device verification. Passing mocks does not establish device compatibility.
 - Authenticated cloud writes and deletions were not exercised during the latest upgrade. The published tests mock those services.
 - Photos cannot reliably determine exact serving weights or hidden ingredients. Unsupported micronutrients remain unknown; nutrition estimates require review.
-- Photo analysis needs internet and is subject to provider quotas and outages. Free-tier availability is not a guarantee of unlimited usage.
-- Offline access requires an earlier online visit on that device. Analysis, goals and recipe changes require internet. Logout clears the active local journal and pending meals; sync or export first.
+- Photo analysis and barcode lookup need internet and are subject to provider quotas and outages. Community label data must be checked against the package. Free-tier availability is not a guarantee of unlimited usage.
+- Offline access requires an earlier online visit on that device. Analysis, goals and recipe changes require internet. Logout clears the active local journal, unfinished draft and pending meals; save, sync or export first.
 - Android reminders cover up to 30 days and refresh when the app opens. Future reminders prompt users to open their summary; battery restrictions can delay delivery. Website reminders require the website to stay open.
 - Existing data from the original Sites version is not automatically migrated.
 - Android development-toolchain dependency advisories remain; review the Android documentation before store publication.
 
 ## Privacy and data
 
-Meal records and stored photos are scoped to the signed-in account. Photos and supplied meal details are sent to Google for analysis; free-tier submissions may be reviewed and used for product improvement. Avoid sensitive information in uploads. Disabling Fuel photo retention affects future Fuel storage, not the analysis provider's processing. CSV/JSON exports omit photo files.
+Meal records and stored photos are scoped to the signed-in account. Photos and supplied meal details are sent to Google for analysis; free-tier submissions may be reviewed and used for product improvement. Avoid sensitive information in uploads. Disabling Fuel photo retention affects future Fuel storage, not the analysis provider's processing. CSV/JSON exports omit photo files. JSON exports include weight history. Barcode numbers go to Open Food Facts; identity, photos and meal history are not sent for lookup.
 
 Read the published [privacy information](https://fuel-journal.vercel.app/privacy) and [account-deletion instructions](https://fuel-journal.vercel.app/delete-account).
 

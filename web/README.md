@@ -1,10 +1,19 @@
-# Fuel 0.3 — web journal
+# Fuel 0.4 — web journal
 
 Responsive charcoal/lime meal journal: https://fuel-journal.vercel.app. Hosted on Vercel Hobby, with Supabase login, owner-only database policies and private photo storage. No service-role or AI secret is shipped to the browser or APK.
 
 ## Configure and run
 
 Use Node 22.13 or newer: npm ci, npm run dev, npm run build. Copy .env.example to .env.local and supply your own values. Initialize a new database with supabase.sql, then apply supabase-upgrade.sql. The existing deployed project has both migrations.
+
+## Added in 0.4
+
+- Account-scoped unfinished drafts, including photos, recovered after closing or reloading. Logout removes drafts.
+- Meals written to the device outbox before upload, and kept with the same ID after ambiguous network responses.
+- Always-visible sync status, searchable saved meals and Open Food Facts barcode lookup with serving review. Missing fibre requires label entry.
+- Body-weight history in Weekly review, with averages over recorded entries and backward-compatible settings.
+- Password-recovery UI using the existing auth callback, plus a page-error recovery screen. Recovery emails depend on Supabase delivery limits and must be opened in the requesting browser.
+- APK update notice when an older native build is detected. Android installation needs user confirmation.
 
 ## Included
 
@@ -25,4 +34,4 @@ Gemini uses a server-only GEMINI_API_KEY. Free billing is used; quotas and provi
 
 Production builds and TypeScript passed. Tests exercise account-scoped offline storage, Blob photo queues, idempotent retries, CSV injection protection, settings migration, authentication/origin guards and cross-account sync rejection. Synthetic local UI fixtures verified file selection, automatic analysis flow, doubled portions, review-before-save, recipe/repeat controls and phone navigation without overflow at 390×844. Fixtures do not establish AI accuracy.
 
-Native picker/reminder mocks passed; physical Android testing remains necessary. No temporary Supabase account was created for this upgrade, as the user declined it. Authenticated cloud writes/deletions were not exercised for this upgrade. Existing real-photo analysis checks passed on the earlier version, but estimates remain approximate. No personal meal data was used. Original Sites data has not been automatically transferred.
+Fuel 0.4 production build, TypeScript, native Metro export and seven published regression suites passed. Synthetic browser checks covered label serving arithmetic, draft recovery after reload, saving, weight entries and phone layout. Native picker/reminder mocks passed; physical Android testing remains necessary. No temporary Supabase account was created for this upgrade, as the user declined it. Authenticated cloud writes/deletions were not exercised for this upgrade. Existing real-photo analysis checks passed on the earlier version, but estimates remain approximate. No personal meal data was used. Original Sites data has not been automatically transferred.

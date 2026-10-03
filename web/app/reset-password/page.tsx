@@ -1,0 +1,9 @@
+'use client';
+import {useEffect,useState,FormEvent} from 'react';
+import {createClient} from '../../lib/supabase/client';
+export default function ResetPassword(){
+ const [password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[busy,setBusy]=useState(false),[ready,setReady]=useState(false),[message,setMessage]=useState('Checking your recovery link…');
+ useEffect(()=>{createClient().auth.getUser().then(({data,error})=>{setReady(!error&&!!data.user);setMessage(error||!data.user?'Open the recovery link from your email in the same browser that requested it. The link may have expired.':'Choose a new password for your account.');});},[]);
+ async function submit(event:FormEvent){event.preventDefault();if(password!==confirm){setMessage('The passwords do not match.');return;}setBusy(true);try{const {error}=await createClient().auth.updateUser({password});if(error)throw error;setMessage('Password updated. You can open your journal.');setReady(false);}catch(e){setMessage((e as Error).message);}finally{setBusy(false);}}
+ return <main className="login-page"><div className="card login-card"><a className="brand" href="/welcome">fuel<span>✳</span></a><h1>Reset your password.</h1><p role="status">{message}</p>{ready&&<form onSubmit={submit}><label>New password<input type="password" minLength={8} required autoComplete="new-password" value={password} onChange={e=>setPassword(e.target.value)}/></label><label>Confirm password<input type="password" minLength={8} required autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label><button className="primary" disabled={busy}>{busy?'Updating…':'Save new password'}</button></form>}<a className="text-btn" href="/">Open journal</a><a className="text-btn" href="/login">Back to sign in</a></div></main>;
+}
