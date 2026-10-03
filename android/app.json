@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Fuel",
+    "slug": "fuel-meal-journal",
+    "version": "0.3.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fuelmealjournal.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Photograph your meal to add it to your private journal.",
+        "NSPhotoLibraryUsageDescription": "Choose a meal photo for your private journal."
+      }
+    },
+    "android": {
+      "package": "com.fuelmealjournal.app",
+      "versionCode": 4,
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "platforms": [
+      "android"
+    ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "microphonePermission": false
+        }
+      ],
+      "expo-notifications",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "42622255-85b9-4751-b95e-e0b38fe32df7"
+      }
+    },
+    "owner": "ayushkjha-fuel"
+  }
+}
