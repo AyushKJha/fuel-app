@@ -11,7 +11,7 @@ import {SafeAreaProvider,SafeAreaView} from 'react-native-safe-area-context';
 import {WebView} from 'react-native-webview';
 import {notificationPermission,clearReminders,restoreReminders,updateReminders} from './reminders';
 const HOME='https://fuel-journal.vercel.app/',ORIGIN='https://fuel-journal.vercel.app';
-const INFO={version:'0.4.0',versionCode:5,notifications:true,sharing:true};
+const INFO={version:'2.0.0',versionCode:6,notifications:true,sharing:true};
 const INFO_SCRIPT=`window.__fuelNative=${JSON.stringify(INFO)};window.dispatchEvent(new CustomEvent('fuel-native-ready'));true;`;
 function trusted(url:string){try{return new URL(url).origin===ORIGIN;}catch{return false;}}
 type Delivery={requestId:string;base64?:string;canceled?:boolean;error?:string};

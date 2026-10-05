@@ -1,15 +1,18 @@
 # Fuel
 
-Fuel is a meal journal for Android phones and laptop browsers. Photograph a meal, review the estimated foods and portions, and track nutrition against your goals over time.
+Fuel is a meal journal for Android phones and laptop browsers. Photograph a meal or type foods with quantities, review the estimated foods and portions, and track nutrition against your goals over time.
 
 **Website:** [fuel-journal.vercel.app](https://fuel-journal.vercel.app)
 
-**Android release:** 0.4.0 · version code 5 · package ID: com.fuelmealjournal.app
+**Android release:** 2.0.0 · version code 6 · package ID: com.fuelmealjournal.app
 
 ## Features
 
 - Camera and gallery input with server-side Gemini nutrition estimates and acknowledged native photo delivery.
 - Android barcode scanning and Open Food Facts product lookup with editable serving sizes.
+- Text-only meal estimation from ingredients, amounts, cooked/raw details and supplied labels.
+- Editable per-food portions and nutrients, with exact quantity scaling and per-100g/ml label conversion.
+- User-applied food nutrition retained when re-estimating extras.
 - Portion adjustments, food corrections and extra ingredients such as oils and sauces, with confirmation before saving.
 - Daily calorie, protein, carbohydrate and fat totals, with supported micronutrients.
 - Goal settings, monthly meal history, weekly comparisons and progress summaries.
@@ -26,7 +29,13 @@ Fuel is a meal journal for Android phones and laptop browsers. Photograph a meal
 
 The Android app displays the hosted journal in a React Native WebView and supplies native camera, photo-picker, sharing and notification features. The website provides the journal interface and API routes. Supabase handles authentication, database records and private photo storage. Photo analysis runs on the server using Gemini; the AI key is never bundled into the browser or APK.
 
-A photo produces an estimate, not a measured nutritional result. Users review the identified foods, serving sizes and added ingredients before saving.
+A photo or written description produces an estimate, not a measured nutritional result. User-supplied package values replace estimates for that food; changing a weight scales its nutrients and totals use arithmetic. Users review the identified foods, serving sizes and added ingredients before saving.
+
+## Editing a meal in 2.0
+
+Open **Edit amount or package macros** under an ingredient. Set the amount eaten, then replace protein or other values from your label and tap **Apply food corrections**. Select whether values apply to the eaten portion or per 100g/ml. For example, 25g protein per 100g gives 50g for 200g paneer. Supplied calories are retained rather than invented from protein alone. Unknown optional nutrients stay blank. Applied corrections are part of the recovered draft.
+
+For a meal without a photo, choose **Type foods & amounts**, enter the ingredients and amounts, and tap **Calculate macros from foods**. Include oils and raw/cooked details. Essential macros are filled automatically; review and save. AI estimates for unlabelled foods remain approximate.
 
 ## Repository layout
 
@@ -116,7 +125,7 @@ Install dependencies in both web and android, then run from the repository root:
 node tests/run.cjs
 ```
 
-The suites cover photo delivery, duplicate suppression, Android picker/barcode behavior and permissions, bridge origin checks, account isolation, durable offline saves, draft recovery, label serving arithmetic and nutrient units, duplicate-safe meal saves, deletion safeguards and logout success/failure behavior. They use mocks and do not require accounts or credentials.
+The suites cover photo delivery, duplicate suppression, Android picker/barcode behavior and permissions, bridge origin checks, account isolation, durable offline saves, draft recovery, label serving arithmetic and nutrient units, measured-portion corrections, package overrides, protected text estimation, duplicate-safe meal saves, deletion safeguards and logout success/failure behavior. They use mocks and do not require accounts or credentials.
 
 Check TypeScript separately:
 
@@ -129,7 +138,7 @@ npx tsc --noEmit
 
 ## Current limitations
 
-- Real Android camera/gallery behavior, notification delivery and native sharing still need physical-device verification. Passing mocks does not establish device compatibility.
+- The owner confirmed camera/gallery, photo analysis, saving and daily totals on 0.4.0. The 2.0.0 changes were checked in a synthetic browser environment; notification delivery, barcode scanning and native sharing still need physical-device verification.
 - Authenticated cloud writes and deletions were not exercised during the latest upgrade. The published tests mock those services.
 - Photos cannot reliably determine exact serving weights or hidden ingredients. Unsupported micronutrients remain unknown; nutrition estimates require review.
 - Photo analysis and barcode lookup need internet and are subject to provider quotas and outages. Community label data must be checked against the package. Free-tier availability is not a guarantee of unlimited usage.
@@ -140,7 +149,7 @@ npx tsc --noEmit
 
 ## Privacy and data
 
-Meal records and stored photos are scoped to the signed-in account. Photos and supplied meal details are sent to Google for analysis; free-tier submissions may be reviewed and used for product improvement. Avoid sensitive information in uploads. Disabling Fuel photo retention affects future Fuel storage, not the analysis provider's processing. CSV/JSON exports omit photo files. JSON exports include weight history. Barcode numbers go to Open Food Facts; identity, photos and meal history are not sent for lookup.
+Meal records and stored photos are scoped to the signed-in account. Photos, written meal descriptions, package values and supplied meal details are sent to Google for analysis; free-tier submissions may be reviewed and used for product improvement. Avoid sensitive information in uploads. Disabling Fuel photo retention affects future Fuel storage, not the analysis provider's processing. CSV/JSON exports omit photo files. JSON exports include weight history. Barcode numbers go to Open Food Facts; identity, photos and meal history are not sent for lookup.
 
 Read the published [privacy information](https://fuel-journal.vercel.app/privacy) and [account-deletion instructions](https://fuel-journal.vercel.app/delete-account).
 

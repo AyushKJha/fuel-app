@@ -1,10 +1,17 @@
-# Fuel 0.4 — web journal
+# Fuel 2.0 — web journal
 
 Responsive charcoal/lime meal journal: https://fuel-journal.vercel.app. Hosted on Vercel Hobby, with Supabase login, owner-only database policies and private photo storage. No service-role or AI secret is shipped to the browser or APK.
 
 ## Configure and run
 
 Use Node 22.13 or newer: npm ci, npm run dev, npm run build. Copy .env.example to .env.local and supply your own values. Initialize a new database with supabase.sql, then apply supabase-upgrade.sql. The existing deployed project has both migrations.
+
+## Added in 2.0
+
+- Text-only AI meal estimation from foods, amounts and supplied label values.
+- Per-food macro editing and arithmetic quantity scaling, including per-100g/ml label values.
+- Applied corrections preserved when estimating extras; stale text and unapplied edits blocked from saving.
+- Written food descriptions and correction metadata recovered in account-scoped drafts.
 
 ## Added in 0.4
 

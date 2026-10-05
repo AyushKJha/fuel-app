@@ -14,7 +14,7 @@ type zMeal=ReturnType<typeof mealSchema.parse>;
 const syncing=new Map<string,Promise<Meal[]>>();
 export function syncMeals(owner:string){const existing=syncing.get(owner);if(existing)return existing;const task=(async()=>{const saved:Meal[]=[];for(const entry of await pendingMeals(owner)){try{saved.push(await send(entry));await store('outbox','readwrite',s=>s.delete(entry.id));}catch(error){if(error instanceof Error&&error.message==='offline')break;throw error;}}return saved;})().finally(()=>{syncing.delete(owner);});syncing.set(owner,task);return task;}
 export async function removePending(owner:string,id:string){const entries=await pendingMeals(owner);if(entries.some(e=>e.id===id))await store('outbox','readwrite',s=>s.delete(id));}
-export type MealDraft={owner:string;form:Record<string,unknown>;foods:unknown[];scales:number[];photo?:Blob;details:string;extras:string;estimateNote:string;updated:number};
+export type MealDraft={owner:string;form:Record<string,unknown>;foods:unknown[];scales:number[];photo?:Blob;details:string;extras:string;estimateNote:string;description?:string;textDirty?:boolean;corrections?:number[];analysisKind?:'photo'|'text';updated:number};
 export async function readDraft(owner:string){return store<MealDraft|undefined>('drafts','readonly',s=>s.get(owner));}
 const draftWrites=new Map<string,Promise<unknown>>();
 function draftTask(owner:string,action:()=>Promise<void>){const run=(draftWrites.get(owner)||Promise.resolve()).catch(()=>{}).then(action);draftWrites.set(owner,run);void run.finally(()=>{if(draftWrites.get(owner)===run)draftWrites.delete(owner);}).catch(()=>{});return run;}

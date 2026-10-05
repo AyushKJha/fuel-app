@@ -1,7 +1,7 @@
 {
   "name": "fuel-mobile",
   "license": "0BSD",
-  "version": "0.4.0",
+  "version": "2.0.0",
   "main": "index.ts",
   "dependencies": {
     "expo": "~57.0.26",

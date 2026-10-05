@@ -2,7 +2,7 @@
   "expo": {
     "name": "Fuel",
     "slug": "fuel-meal-journal",
-    "version": "0.4.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "icon": "./assets/icon.png",
@@ -16,7 +16,7 @@
     },
     "android": {
       "package": "com.fuelmealjournal.app",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": [
         "android.permission.CAMERA"
       ],

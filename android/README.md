@@ -1,6 +1,6 @@
-# Fuel Android 0.4.0
+# Fuel Android 2.0.0
 
-Android versionCode 5; package com.fuelmealjournal.app. The update preserves the existing Expo-managed signing identity. Install the signed APK over Fuel; do not uninstall first. Backend: https://fuel-journal.vercel.app.
+Android versionCode 6; package com.fuelmealjournal.app. The update preserves the existing Expo-managed signing identity. Install the signed APK over Fuel; do not uninstall first. Backend: https://fuel-journal.vercel.app.
 
 Native WebView app with Camera / Photos / Barcode controls, JPEG resizing, acknowledged photo transfer, permission guidance, picker feedback, Android pending-result recovery and a legacy system document picker. Photos start server-side Gemini estimates automatically. Review portions, corrections and hidden ingredients before saving; exact macros cannot be established from a photo.
 
@@ -21,3 +21,5 @@ npm ci, npx expo start. APK: npx eas-cli build --platform android --profile prev
 TypeScript and Android Metro export passed. Native mocks cover camera/gallery, bridge readiness, cancellation, denied permission, origin filtering, Back and reminder scheduling/cleanup. Physical camera, notification delivery and native sharing still need device verification. No temporary Supabase account was created for this upgrade.
 
 Non-breaking audit repairs were applied. The current npm audit reports 24 transitive dependency advisories (8 moderate, 16 high). Expo/xcode/node-forge development tooling was previously affected; the proposed forced fix substantially downgrades Expo and was not applied. Review before store publication. Permissions exclude microphone and broad storage access.
+
+Version 2.0 adds hosted text meal estimation, editable per-food macros, label conversion and quantity scaling. Select Type foods & amounts to calculate nutrition without a photo. Under each analyzed food, apply the package values to update meal totals. The Android package and signing identity are unchanged.

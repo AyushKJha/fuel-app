@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0 — October 5, 2026
+
+- Added text-only meal analysis from ingredients and amounts with automatically filled macros.
+- Added per-food quantity and nutrient editing, package values for eaten portions or per 100g/ml, and exact arithmetic totals.
+- Preserved applied food corrections across subsequent analysis for extras and draft recovery.
+- Blocked saving stale text estimates or unapplied ingredient edits.
+- Updated privacy disclosure for written descriptions and advanced the offline shell cache.
+- Kept the Android package/signing identity and increased version code to 6 for an in-place update.
+
+Validation: eight mocked regression suites, TypeScript/production web build, synthetic browser text/photo correction and save flows, 390px phone layout, and a real text-only Gemini check using a synthetic paneer package example. These checks do not establish general nutrition accuracy or substitute for device testing.
+
 ## 0.4.0 — October 3, 2026
 
 - Added native Android food-barcode scanning and community label lookup with serving review.
