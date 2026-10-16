@@ -9,6 +9,8 @@ Photograph a meal or type foods and quantities, review the estimated portions, a
 
 **Next.js · TypeScript · Supabase · Gemini · Expo / React Native**
 
+> **[Step-by-step user guide (PDF)](docs/USER_GUIDE.pdf)**
+
 ## What it does
 
 - Photo and text input for meal estimates.
