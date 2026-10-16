@@ -9,8 +9,6 @@ Photograph a meal or type foods and quantities, review the estimated portions, a
 
 **Next.js · TypeScript · Supabase · Gemini · Expo / React Native**
 
-> **[Step-by-step user guide (PDF)](docs/USER_GUIDE.pdf)**
-
 ## What it does
 
 - Photo and text input for meal estimates.
@@ -22,6 +20,15 @@ Photograph a meal or type foods and quantities, review the estimated portions, a
 - Photo-retention controls and account deletion.
 
 Nutrition estimates are approximate. Review serving sizes, hidden ingredients, and package data before saving.
+
+## Log a meal
+
+1. Open Fuel and sign in or create an account. The journal is account-scoped.
+2. Choose a meal photo or enter foods and quantities manually. Android users can scan a barcode where supported.
+3. Review each suggested food, serving size, and nutrient value. Correct portions or use package labels before saving.
+4. Return to the daily view for totals and history; add goals, recipes, or weight entries as needed. Export a CSV or JSON backup from the journal controls.
+
+Meal photos and entered food details are sent to the configured analysis provider when you request an estimate. Read the [privacy information](https://fuel-journal.vercel.app/privacy) before uploading personal data. Estimates are not medical advice.
 
 ## Android download
 
