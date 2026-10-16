@@ -1,4 +1,4 @@
-<img src="docs/banner.svg" alt="Project overview" width="100%">
+<img src="docs/banner.svg" alt="fuel-app project illustration" width="100%">
 
 # Fuel
 ### A meal journal you can correct.
